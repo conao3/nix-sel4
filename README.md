@@ -200,6 +200,14 @@ nix build github:conao3/nix-sel4#hello-report && cat result/report.txt
 
 `x86_64-linux` or `aarch64-linux`. QEMU emulates the target architecture, so no KVM and no seL4 hardware is needed to run the examples.
 
+## Related work
+
+[seL4-nix-utils](https://github.com/DLR-FT/seL4-nix-utils) covers the seL4 ecosystem broadly from Nix: the kernel, sel4test across simulated and physical targets, CAmkES, U-Boot for specific boards, and a Microkit SDK built from source together with a `microkit` development shell. If you want the SDK compiled rather than downloaded, or you work outside Microkit, start there.
+
+nix-sel4 is narrower and starts where that shell ends. It stays inside Microkit and provides the layer that turns a system description plus a few C files into a bootable image: `buildProtectionDomain`, `buildSystem`, `mkSystemDescription` with its evaluation-time checks, a board table carrying QEMU invocations, and a `nix run` that boots. The SDK here is the official pre-built release tarball, which keeps the closure small at the cost of trusting the published binaries. `buildSystem` and `buildProtectionDomain` both take an `sdk` argument, so another SDK derivation can be substituted.
+
+Other Nix work in this space: [seL4-verification-reproducibility](https://github.com/coliasgroup/seL4-verification-reproducibility) (Nix expressions for reproducing the verification results), [sel4-nix-shells](https://github.com/sledgehammervampire/sel4-nix-shells) and [chrysopolis](https://github.com/byzantine-systems/chrysopolis) (a BEAM runtime on seL4, Nix and LionsOS).
+
 ## Related
 
 - [seL4/microkit](https://github.com/seL4/microkit) — the framework and the SDK this builds on
